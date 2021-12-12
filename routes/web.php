@@ -14,5 +14,17 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+
+    $handle = fopen(database_path('sorted.csv'), 'r');
+
+    while (($row = fgetcsv($handle, 0, ",")) !== FALSE) {
+        $csv[] = $row;
+    }
+    fclose($handle);
+
+    $codes = collect(array_map(function ($values) use ($csv) {
+        return array_combine($csv[0], $values);
+    }, array_slice($csv, 1)))->where('eligible_code','!=','');
+
+    return view('home',compact('codes'));
 });
