@@ -1,0 +1,67 @@
+<h2>Αποτελέσματα ελέγχου:</h2>
+<div class="availabilityTableContainer">
+	<table class="offers">
+		<tr>
+			<th> COSMOTE Fiber </th>
+			<th> Διαθεσιμότητα στην περιοχή σου </th>
+			<th> </th>
+		</tr>
+		<tr>
+			<td class="cat"> Έως 200 Mbps </td>
+			<td> <img class="checkbox-img" style="width: 25px ! important; vertical-align: middle;" src="https://www.cosmote.gr/images/selfcare/check@2x.png"> Διαθέσιμο στην περιοχή σου! </td>
+			<td class="light">
+				<button class="buttonv2 button--primary button--small" onclick="dataLayer.push({'event':'availabilitySeeProdsClick','value':'Έως 200 Mbps'});window.open('https://www.cosmote.gr/eshop/global/gadgets/configurator.jsp?productId=prod1290029_prod','_blank');"> Δες τα πακέτα</button>
+			</td>
+		</tr>
+		<tr>
+			<td class="cat"> Έως 100 Mbps </td>
+			<td> <img class="checkbox-img" style="width: 25px ! important; vertical-align: middle;" src="https://www.cosmote.gr/images/selfcare/check@2x.png"> Διαθέσιμο στην περιοχή σου! </td>
+			<td class="light">
+				<button class="buttonv2 button--primary button--small" onclick="dataLayer.push({'event':'availabilitySeeProdsClick','value':'Έως 100 Mbps'});window.open('https://www.cosmote.gr/eshop/global/gadgets/configurator.jsp?productId=prod1290028_prod','_blank');"> Δες τα πακέτα</button>
+			</td>
+		</tr>
+		<tr>
+			<td class="cat"> Έως 50 Mbps </td>
+			<td> <img class="checkbox-img" style="width: 25px ! important; vertical-align: middle;" src="https://www.cosmote.gr/images/selfcare/check@2x.png"> Διαθέσιμο στην περιοχή σου! </td>
+			<td class="light">
+				<button class="buttonv2 button--primary button--small" onclick="dataLayer.push({'event':'availabilitySeeProdsClick','value':'Έως 50 Mbps'});window.open('https://www.cosmote.gr/eshop/go/Fixed%20Plans/Double%20Play%20Plans/Double%20Play%20Fiberspeed%20up%20to%20200Mbps?Nf=product.recurringSalePrice|BTWN+31+36','_blank');"> Δες τα πακέτα</button>
+			</td>
+		</tr>
+	</table>
+</div>
+<div class="availabilityTableContainer">
+	<table class="offers">
+		<tr>
+			<th> ADSL </th>
+			<th> Διαθεσιμότητα στην περιοχή σου </th>
+			<th> </th>
+		</tr>
+		<tr>
+			<td class="cat"> Έως 24 Mbps </td>
+			<td> <img class="checkbox-img" style="width: 25px ! important; vertical-align: middle;" src="https://www.cosmote.gr/images/selfcare/check@2x.png"> Διαθέσιμο στην περιοχή σου! </td>
+			<td class="light">
+				<button class="buttonv2 button--primary button--small" onclick="dataLayer.push({'event':'availabilitySeeProdsClick','value':'Έως 24 Mbps'});window.open('https://www.cosmote.gr/eshop/global/gadgets/configurator.jsp?productId=prod430029','_blank');"> Δες τα πακέτα</button>
+			</td>
+		</tr>
+	</table>
+</div>
+<div class="modal modal-redesign" id="availabiltyCheckSpeed" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="overflow: auto;">
+	<div class="modal-dialog availabilty-check-2" style="max-width: 730px" role="document">
+		<div class="modal-content container_availability-form">
+			<div class="modal-header general-header pb-20">
+				<button type="button" class="close mt-10" data-dismiss="modal" aria-label="Close"> <i class="icon-close-popup"></i> </button>
+			</div>
+			<div class="modal-body pl-40 pr-40 pt-20 pb-20">
+				<div class="mb-40"> <span class="fs-30">Ταχύτητα Σύνδεσης</span>
+					<br>
+					<br> <span>Επίλεξε ονομαστική ταχύτητα και δες την εκτίμηση πραγματικής ταχύτητας στο internet βάσει μετρήσεων στην περιοχή σου.</span> </div>
+				<div class="row mb-20">
+					<div id="btn24" class="col-md-12 col-xs-12 speedTableGrid"> </div>
+				</div>
+				<p><span>Περισσότερες πληροφορίες αναφορικά με την ορολόγια Μέγιστη, Συνήθη και Ελάχιστη ταχύτητα μπορείς να βρέις στους <a class="text-bold black" href="https://www.cosmote.gr/cs/cosmote/gr/anoikto_diadiktyo_statheri_74600.html" target="_blank"><u> Όρους Ανοιχτού Διαδικτύου</u></a>.</span></p>
+				<div class="text-right mr-20 fs-12"> Τελευταία Ενημέρωση <b>Νοέμβριος 2020 </b> </div>
+			</div>
+		</div>
+	</div>
+</div>
+<script type="application/javascript" src="/ote_static/selfcare-custom/js/availabilityCheckPopUp.js"></script>
