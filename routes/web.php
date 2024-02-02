@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CosmoteAvailabilityController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,18 +15,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
 
-    $handle = fopen(database_path('sorted.csv'), 'r');
 
-    while (($row = fgetcsv($handle, 0, ",")) !== FALSE) {
-        $csv[] = $row;
-    }
-    fclose($handle);
+Route::post('/cosmote/check-availability', CosmoteAvailabilityController::class)->name('cosmote.check-availability');
+Route::get('/', HomeController::class)->name('home');
 
-    $codes = collect(array_map(function ($values) use ($csv) {
-        return array_combine($csv[0], $values);
-    }, array_slice($csv, 1)))->where('eligible_code','!=','');
 
-    return view('home',compact('codes'));
-});
+
