@@ -3,12 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-
-use App\Models\PostalCode;
-use App\Models\Street;
 use App\Models\StreetNumber;
 use Symfony\Component\DomCrawler\Crawler;
-use Goutte\Client;
 
 class ImportAvailabilityCosmote extends Command
 {
@@ -48,7 +44,7 @@ class ImportAvailabilityCosmote extends Command
 
         $baseUri = 'https://www.cosmote.gr/eshop/global/gadgets/populateAddressDetailsV3.jsp';
         $availabilityUri = 'https://www.cosmote.gr/selfcare/jsp/ajax/avdslavailabilityAjaxV2.jsp';
-        
+
         $numbers = StreetNumber::with('street.postalCode')
         ->whereHas('street',function($q){
             $q->where('cosmote_street_name','!=','');
@@ -76,7 +72,7 @@ class ImportAvailabilityCosmote extends Command
             $crawler = new Crawler;
             $crawler->addHTMLContent($html, 'UTF-8');
 
-            
+
             $areas = [];
             $crawler->filter('li > a')->each(function ($node,$index) use(&$areas){
                 if($index > 0){
@@ -119,15 +115,15 @@ class ImportAvailabilityCosmote extends Command
                 $crawler->filter('tr')->each(function ($node,$index) use(&$results){
                     $results[] = $node->text();
                 });
-            
-            
+
+
                 $results = collect($results);
 
-            
+
                 $cosmote200mpbs = $results->filter(function($value){
                     return mb_stripos($value,'Έως 200 Mbps Διαθέσιμο στην περιοχή σου! Δες τα πακέτα') !== false;
                 })->count();
-            
+
                 $ftth = $results->filter(function($value){
                     return mb_stripos($value,'Έως 200 Mbps Διαθέσιμο στην περιοχή σου μέσω υποδομής Fiber To The Home') !== false;
                 })->count();
@@ -155,7 +151,7 @@ class ImportAvailabilityCosmote extends Command
 
 
             }
- 
+
 
         }
 
