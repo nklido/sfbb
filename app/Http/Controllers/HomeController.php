@@ -24,6 +24,6 @@ class HomeController extends Controller
             ->orderBy('ftth_count','desc')
             ->get();
 
-        return view('welcome',compact('numbers','postalCodes'));
+        return view('home',compact('numbers','postalCodes'));
     }
 }

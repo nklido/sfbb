@@ -7,15 +7,11 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     *
-     * @return void
-     */
-    public function test_example()
-    {
-        $response = $this->get('/');
 
+    /** @test */
+    public function it_shows_the_home_view()
+    {
+        $response = $this->get(route('home'));
         $response->assertStatus(200);
     }
 }
