@@ -51,13 +51,6 @@
               </div>
             @endif
 
-
-
-            <form action="{{route('cosmote.check-availability')}}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-primary">Refresh ftth</button>
-            </form>
-
             <div class="mb-4" style="display:flex;flex-wrap:wrap">
             @foreach($postalCodes as $postalCode)
                     <form action="{{route('home')}}">
