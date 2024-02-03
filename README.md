@@ -9,7 +9,7 @@ By scraping Data from [sfbb](https://sfbb.gr/) and [Cosmote](https://www.cosmote
 
 
 ### pre requisites
-
+* Composer
 * PHP 7|8 
 * MySQL Server
 * Apache
