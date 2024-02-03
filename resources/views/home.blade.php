@@ -20,6 +20,25 @@
             body {
                 font-family: 'Nunito', sans-serif;
             }
+
+            .modal-body{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .modal-body p{
+                margin-bottom: 0;
+            }
+
+            .modal-body ion-icon{
+                font-size: 24px;
+                width: 50px;
+            }
+
+            *{
+                box-sizing: content-box;
+            }
         </style>
     </head>
     <body class="antialiased">
