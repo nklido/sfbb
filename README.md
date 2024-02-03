@@ -7,7 +7,7 @@ supports a fiber connection. Growing up in a place with 2mbps speed, I just had 
 By scraping Data from [sfbb](https://sfbb.gr/) and [Cosmote](https://www.cosmote.gr/hub/)
 
 
-| ![](public\dashboard_example.png) | ![](public\availability_success.png) |
+| ![](public/dashboard_example.png) | ![](public/availability_success.png) |
 |-----------------------------------|--------------------------------------|
 
 
