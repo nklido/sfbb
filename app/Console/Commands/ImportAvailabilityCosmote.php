@@ -2,6 +2,10 @@
 
 namespace App\Console\Commands;
 
+use App\Models\PostalCode;
+use App\Services\Cosmote\AvailabilityService;
+use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
 use App\Models\StreetNumber;
 use Symfony\Component\DomCrawler\Crawler;
@@ -13,21 +17,21 @@ class ImportAvailabilityCosmote extends Command
      *
      * @var string
      */
-    protected $signature = 'availability-cosmote:import';
+    protected $signature = 'availability-cosmote:import {code : The postal code to process}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Import cosmote availability for specific tk';
+    protected $description = 'Import cosmote availability for specific postal code';
 
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(private readonly AvailabilityService $availabilityService)
     {
         parent::__construct();
     }
@@ -40,124 +44,33 @@ class ImportAvailabilityCosmote extends Command
     public function handle()
     {
 
-        libxml_use_internal_errors(true);
+        $postalCode = $this->argument('code');
 
-        $baseUri = 'https://www.cosmote.gr/eshop/global/gadgets/populateAddressDetailsV3.jsp';
-        $availabilityUri = 'https://www.cosmote.gr/selfcare/jsp/ajax/avdslavailabilityAjaxV2.jsp';
-
-        $numbers = StreetNumber::with('street.postalCode')
-        ->whereHas('street',function($q){
-            $q->where('cosmote_street_name','!=','');
-        })
-        ->whereHas('street.postalCode',function($q){
-            $q->where('code',10446);
-        })->get();
-
-
-        $client = new \GuzzleHttp\Client();
-
-
-        foreach($numbers as $number){
-            $streetName = mb_strtoupper($number->street->cosmote_street_name);
-
-            // if($number->comsote_200 !== null || $number->comsote_200 !== null) continue;
-
-            $this->comment("Checking: $number->description...");
-
-            $response = $client->request('GET', $baseUri."?streetName=$streetName&stateId=52&municipalityId=706&_=1640807210566");
-
-            $html = $response->getBody()->getContents();
-            $doc = new \DOMDocument;
-            $doc->loadHTML($html);
-            $crawler = new Crawler;
-            $crawler->addHTMLContent($html, 'UTF-8');
-
-
-            $areas = [];
-            $crawler->filter('li > a')->each(function ($node,$index) use(&$areas){
-                if($index > 0){
-                    $areas[] = $node->text();
-                }
-            });
-
-            if(!sizeof($areas)){
-                $this->comment('areas not found');
-                continue;
-            }
-
-            foreach(collect($areas) as $area){
-                $this->comment('Checking for Area: '.$area);
-
-                $response = $client->request('POST', 'https://www.cosmote.gr/selfcare/jsp/ajax/avdslavailabilityAjaxV2.jsp', [
-                    'headers' => [
-                        "Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8",
-                    ],
-                    'form_params' => [
-                        'mTelno' => '',
-                        'mAddress' => $streetName,
-                        'mState'   => 'Ν. ΑΤΤΙΚΗΣ',
-                        'mPrefecture' => 'Δ. ΑΘΗΝΑΙΩΝ',
-                        'mNumber' => '2',
-                        'mArea' => $area,
-                        'searchcriteria' => 'address',
-                        'ct' => 'res'
-                    ]
-                ]);
-
-                $html = $response->getBody()->getContents();
-
-                $doc = new \DOMDocument;
-                $doc->loadHTML($html);
-                $crawler = new Crawler;
-                $crawler->addHTMLContent($html, 'UTF-8');
-
-                $results = [];
-                $crawler->filter('tr')->each(function ($node,$index) use(&$results){
-                    $results[] = $node->text();
-                });
-
-
-                $results = collect($results);
-
-
-                $cosmote200mpbs = $results->filter(function($value){
-                    return mb_stripos($value,'Έως 200 Mbps Διαθέσιμο στην περιοχή σου! Δες τα πακέτα') !== false;
-                })->count();
-
-                $ftth = $results->filter(function($value){
-                    return mb_stripos($value,'Έως 200 Mbps Διαθέσιμο στην περιοχή σου μέσω υποδομής Fiber To The Home') !== false;
-                })->count();
-
-                if($cosmote200mpbs){
-                    $this->comment('200mbps found!');
-                    $number->comsote_200 = true;
-                    $number->cosmote_200_ftth = false;
-                    $number->save();
-                }
-                if($ftth){
-                    $this->comment('ftth found!');
-                    $number->comsote_200 = true;
-                    $number->cosmote_200_ftth = true;
-                }
-
-                if($ftth || $cosmote200mpbs){
-                    $number->save();
-                    break;
-                }
-
-                $number->comsote_200 = false;
-                $number->cosmote_200_ftth = false;
-                $number->save();
-
-
-            }
-
-
+         if (!PostalCode::where('code', $postalCode)->exists()) {
+            $this->error("Postal code {$postalCode} not found in the database.");
+            return Command::FAILURE;
         }
 
-        $this->comment('-------------------------------------');
+        libxml_use_internal_errors(true);
+        $numbers = StreetNumber::with('street.postalCode')
+            ->whereHas('street', function ($q) {
+                $q->where('cosmote_street_name', '!=', '');
+            })
+            ->whereHas('street.postalCode', function ($q) use ($postalCode){
+                $q->where('code', $postalCode);
+            })->get();
 
-
-        return Command::SUCCESS;
+        foreach ($numbers as $number) {
+            try {
+                $this->comment("Checking: $number->description...");
+                $result = $this->availabilityService->checkAvailability($number);
+                $this->comment("Result: $result");
+                $number->cosmote_200_ftth = $result;
+                $number->save();
+            } catch (GuzzleException|Exception $e) {
+                $this->error($e->getMessage());
+            }
+        }
+        return self::SUCCESS;
     }
 }

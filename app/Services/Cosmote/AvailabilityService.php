@@ -24,10 +24,10 @@ class AvailabilityService
      * a 200Mbps fiber connection
      *
      * @throws GuzzleException
+     * @throws \Exception
      */
     public function checkAvailability(StreetNumber $streetNumber): bool
     {
-
         Log::info('Checking availability', [
             'street' => $streetNumber->street->cosmote_street_name,
             'number' => $streetNumber->number,
@@ -41,7 +41,6 @@ class AvailabilityService
         }
         Log::info('Areas found', $areas);
         foreach($areas as $area){
-
             Log::info("Checking availability for area: $area");
             $results = $this->client->checkAvailability($area,$streetName,$streetNumber->number);
             $availabilities[] = collect($results)->filter(function ($value) {
@@ -49,9 +48,7 @@ class AvailabilityService
             })->count() > 0;
 
             Log::info('Availabilities found: ' . sizeof($availabilities));
-
         }
-
         return collect($availabilities)->filter()->count() > 0;
     }
 

@@ -76,7 +76,6 @@ class CosmoteClient
         $response = $this->client->request('GET', "$this->areaUrl?streetName=$streetName&stateId=52&municipalityId=706&_=1640807210566");
 
         $html = $response->getBody()->getContents();
-        file_put_contents('area_response_success.html',$html);
         return $this->areaHtmlParser->parse($html);
     }
 
