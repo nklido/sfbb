@@ -17,3 +17,5 @@ yarn-error.log
 composer.phar
 
 .php-cs-fixer.cache
+coverage
+coverage.xml
