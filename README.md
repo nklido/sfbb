@@ -1,55 +1,72 @@
 
-## Sfbb (Superfast Broadband) availability tool [![codecov](https://codecov.io/gh/nklido/sfbb/graph/badge.svg?token=2EZUEZY8BQ)](https://codecov.io/gh/nklido/sfbb)
+# Sfbb (Superfast Broadband) availability tool [![codecov](https://codecov.io/gh/nklido/sfbb/graph/badge.svg?token=2EZUEZY8BQ)](https://codecov.io/gh/nklido/sfbb)
 
 I created this tool to help me relocate to Athens and find an area that
-supports a fiber connection. Growing up in a place with 2mbps speed, I just had to make sure 😂
+supports a fiber connection. Growing up in a place with 2Mbps speed, I just had to make sure 😂
 
-By scraping Data from [sfbb](https://sfbb.gr/) and [Cosmote](https://www.cosmote.gr/hub/)
+By scraping data from [sfbb](https://sfbb.gr/) and [Cosmote](https://www.cosmote.gr/hub/)
 
 
 | ![](public/dashboard_example.png) | ![](public/availability_success.png) |
 |-----------------------------------|--------------------------------------|
 
 
+## Docker Setup (Laravel Sail)
 
-### Pre-requisites
-* Composer
-* PHP 7|8 
-* MySQL Server
-* Apache
+### Requirements
+* Docker
+* Docker compose
 
-### Installation
+## Installation
 
-To install the project you first need to copy the example .env file and
-add your `GOOGLE_MAPS_API_KEY`
+For a first time installation run
 
+```bash
+docker run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v $(pwd):/var/www/html \
+    -w /var/www/html \
+    laravelsail/php81-composer:latest \
+    composer install --ignore-platform-reqs
+```
 
+Copy the example .env file and add your GOOGLE_MAPS_API_KEY:
 
-```cmd
+```bash
     cp .env.example .env
 ```
 
 Set you database host, username and password and make sure you create
 a database with name `sfbb`. 
 
-```cmd
+```bash
 DB_DATABASE=sfbb
 DB_USERNAME=<your-db-username>
 DB_PASSWORD=<your-db-password>
 ```
 
-To get started run 
+To start the containers run:
+```
+./vendor/bin/sail up -d
+```
 
-```cmd
+Access a shell in the application container:
+
+```bash
+./vendor/bin/sail shell
+```
+
+and setup the database by running
+```bash
 php artisan migrate:fresh --seed
 ```
 
-### Testing
+## Testing
 
 You can run the tests by running
 
-```cmd
-PS C:\xampp\htdocs\sfbb> vendor/bin/phpunit
+```bash
+./vendor/bin/phpunit
 PHPUnit 9.5.10 by Sebastian Bergmann and contributors.
 
 ......                                                              6 / 6 (100%)
