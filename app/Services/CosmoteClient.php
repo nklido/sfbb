@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Parsers\Cosmote\AreaHtmlParser;
 use App\Parsers\Cosmote\AvailabilityParser;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -34,7 +35,7 @@ class CosmoteClient
      * @param $area
      * @param $streetName
      * @param $number
-     * @throws \Exception
+     * @throws Exception
      * @return array
      */
     public function checkAvailability($area, $streetName, $number): array
@@ -61,10 +62,10 @@ class CosmoteClient
             ]);
         } catch (ConnectException $e) {
             Log::error($e);
-            throw new \Exception("Connection failed");
+            throw new Exception("Connection failed");
         } catch (GuzzleException $e) {
             Log::error($e);
-            throw new \Exception("Error processing request");
+            throw new Exception("Error processing request");
         }
 
         return $this->availabilityParser->parse($response->getBody()->getContents());
