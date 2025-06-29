@@ -12,17 +12,20 @@ use PHPUnit\Exception;
 
 class CosmoteClient
 {
+    private ?string $availabilityUrl;
+    private ?string $areaUrl;
 
-    private $availabilityUrl = "https://my.cosmote.gr/selfcare/jsp/ajax/avdslavailabilityAjaxV2.jsp";
-    private $areaUrl = "https://www.cosmote.gr/eshop/global/gadgets/populateAddressDetailsV3.jsp";
+    protected ?Client $client = null;
+    protected ?AreaHtmlParser $areaHtmlParser = null;
+    protected ?AvailabilityParser $availabilityParser = null;
 
-    protected $client = null;
-    protected $areaHtmlParser = null;
-    protected $availabilityParser = null;
-    public function __construct(Client $client, AreaHtmlParser $areaHtmlParser, AvailabilityParser  $availabilityParser){
+    public function __construct(Client $client, AreaHtmlParser $areaHtmlParser, AvailabilityParser $availabilityParser)
+    {
         $this->client = $client;
         $this->areaHtmlParser = $areaHtmlParser;
         $this->availabilityParser = $availabilityParser;
+        $this->availabilityUrl = config('cosmote.availability_url');
+        $this->areaUrl = config('cosmote.area_url');
     }
 
     /**
@@ -34,9 +37,8 @@ class CosmoteClient
      */
     public function checkAvailability($area, $streetName, $number): array
     {
-
         try {
-            $response = $this->client->request('POST', 'https://my.cosmote.gr/selfcare/jsp/ajax/avdslavailabilityAjaxV2.jsp', [
+            $response = $this->client->request('POST', $this->availabilityUrl, [
                 'connect_timeout' => 5,
                 'timeout' => 5,
                 'headers' => [
@@ -47,7 +49,7 @@ class CosmoteClient
                 'form_params' => [
                     'mTelno' => '',
                     'mAddress' => $streetName,
-                    'mState'   => 'Ν. ΑΤΤΙΚΗΣ',
+                    'mState' => 'Ν. ΑΤΤΙΚΗΣ',
                     'mPrefecture' => 'Δ. ΑΘΗΝΑΙΩΝ',
                     'mNumber' => $number,
                     'mArea' => $area,
@@ -66,15 +68,12 @@ class CosmoteClient
         return $this->availabilityParser->parse($response->getBody()->getContents());
     }
 
-
-
     /**
      * @throws GuzzleException
      */
     public function getAreasForStreetName(string $streetName): array
     {
         $response = $this->client->request('GET', "$this->areaUrl?streetName=$streetName&stateId=52&municipalityId=706&_=1640807210566");
-
         $html = $response->getBody()->getContents();
         return $this->areaHtmlParser->parse($html);
     }
