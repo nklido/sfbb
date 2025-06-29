@@ -75,7 +75,7 @@
             @endif
 
 
-            <form action="/home">
+            <form action="/">
 
                 <div class="input-group mb-3">
                     <input value="{{Request::get('postal_code')}}" name="postal_code" class="form-control" type="search" placeholder="Πληκτρολόγησε τ.κ.">
