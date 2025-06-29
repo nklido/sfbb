@@ -10,15 +10,13 @@ use Illuminate\Http\Request;
 
 class CosmoteAvailabilityController extends Controller
 {
-
     public function __construct()
     {
         libxml_use_internal_errors(true);
     }
 
-    public function __invoke(Request $request, AvailabilityService $availabilityService){
-
-
+    public function __invoke(Request $request, AvailabilityService $availabilityService)
+    {
         $number = StreetNumber::with('street.postalCode')
             ->findOrFail($request->number);
 
@@ -31,7 +29,7 @@ class CosmoteAvailabilityController extends Controller
                 'status' => 'success',
                 'fiber' => $result,
             ]);
-        }catch (GuzzleException|Exception $e) {
+        } catch (GuzzleException|Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage()
@@ -39,4 +37,3 @@ class CosmoteAvailabilityController extends Controller
         }
     }
 }
-

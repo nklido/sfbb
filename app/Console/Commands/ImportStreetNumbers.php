@@ -2,11 +2,9 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
-
-use App\Models\PostalCode;
 use App\Models\Street;
-use App\Models\StreetNumber;
+
+use Illuminate\Console\Command;
 
 class ImportStreetNumbers extends Command
 {
@@ -41,32 +39,28 @@ class ImportStreetNumbers extends Command
      */
     public function handle()
     {
-
-
         $client = new \GuzzleHttp\Client(['base_uri' => 'https://submit.sfbb.gr/EligibilityCheck.aspx']);
 
         $streets = Street::with('postalCode')->get();
 
 
-        foreach($streets as $index => $street){
-
+        foreach ($streets as $index => $street) {
             $postalCode = $street->postalCode;
 
             $this->comment("Index: $index: Requesting $street->name");
             $res = $client->request('GET', "?zip=$postalCode->code&address=$street->name");
             $contents = $res->getBody()->getContents();
 
-            $start = strpos($contents,'var _availableAddressNumbers = ');
-        
-            $end = strpos($contents,'];',$start);
-        
+            $start = strpos($contents, 'var _availableAddressNumbers = ');
+
+            $end = strpos($contents, '];', $start);
+
             $numbers = json_decode(substr($contents, $start + 31, $end - ($start + 31) + 1));
 
 
-            foreach($numbers as $number){
+            foreach ($numbers as $number) {
                 $street->numbers()->create(['number' => $number]);
             }
-            
         }
 
         $this->comment('------------------------------------------------------------------------------');

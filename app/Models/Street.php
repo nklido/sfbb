@@ -11,11 +11,13 @@ class Street extends Model
 
     protected $guarded = [];
 
-    public function postalCode(){
-        return $this->belongsTo(PostalCode::class,'postal_code_id');
+    public function postalCode()
+    {
+        return $this->belongsTo(PostalCode::class, 'postal_code_id');
     }
 
-    public function numbers(){
-        return $this->hasMany(StreetNumber::class,'street_id');
+    public function numbers()
+    {
+        return $this->hasMany(StreetNumber::class, 'street_id');
     }
 }

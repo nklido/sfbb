@@ -3,12 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Models\PostalCode;
+use App\Models\StreetNumber;
 use App\Services\Cosmote\AvailabilityService;
 use Exception;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
-use App\Models\StreetNumber;
-use Symfony\Component\DomCrawler\Crawler;
 
 class ImportAvailabilityCosmote extends Command
 {
@@ -43,10 +42,9 @@ class ImportAvailabilityCosmote extends Command
      */
     public function handle()
     {
-
         $postalCode = $this->argument('code');
 
-         if (!PostalCode::where('code', $postalCode)->exists()) {
+        if (!PostalCode::where('code', $postalCode)->exists()) {
             $this->error("Postal code {$postalCode} not found in the database.");
             return Command::FAILURE;
         }
@@ -56,7 +54,7 @@ class ImportAvailabilityCosmote extends Command
             ->whereHas('street', function ($q) {
                 $q->where('cosmote_street_name', '!=', '');
             })
-            ->whereHas('street.postalCode', function ($q) use ($postalCode){
+            ->whereHas('street.postalCode', function ($q) use ($postalCode) {
                 $q->where('code', $postalCode);
             })->get();
 

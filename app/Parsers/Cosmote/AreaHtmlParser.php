@@ -3,7 +3,6 @@
 namespace App\Parsers\Cosmote;
 
 use App\Parsers\Parser;
-use Symfony\Component\DomCrawler\Crawler;
 
 class AreaHtmlParser extends Parser
 {

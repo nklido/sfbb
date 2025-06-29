@@ -2,8 +2,6 @@
 
 namespace Tests\Http\Controllers;
 
-use App\Http\Controllers\CosmoteAvailabilityController;
-use App\Models\PostalCode;
 use App\Models\StreetNumber;
 use App\Parsers\Cosmote\AreaHtmlParser;
 use App\Parsers\Cosmote\AvailabilityParser;
@@ -12,9 +10,9 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use Tests\TestCase;
+
 class CosmoteAvailabilityControllerTest extends TestCase
 {
-
     /** @test */
     public function test_fiber_is_available()
     {
@@ -22,8 +20,8 @@ class CosmoteAvailabilityControllerTest extends TestCase
 
         // both area & availability results successful
         $mock = new MockHandler([
-            new Response(200,[],file_get_contents(base_path('tests/Data/area_response_success.html'))),
-            new Response(200,[],file_get_contents(base_path('tests/Data/availability_response_example.html')))
+            new Response(200, [], file_get_contents(base_path('tests/Data/area_response_success.html'))),
+            new Response(200, [], file_get_contents(base_path('tests/Data/availability_response_example.html')))
         ]);
         $this->mockCosmoteClientAvailabilityResponse($mock);
 
@@ -38,9 +36,8 @@ class CosmoteAvailabilityControllerTest extends TestCase
         $this->assertTrue($response->json('fiber'));
 
         $number->refresh();
-        $this->assertEquals(true,$number->cosmote_200_ftth);
+        $this->assertEquals(true, $number->cosmote_200_ftth);
     }
-
 
     /** @test */
     public function test_fiber_is_not_available()
@@ -49,8 +46,8 @@ class CosmoteAvailabilityControllerTest extends TestCase
 
         // both area & availability results successful
         $mock = new MockHandler([
-            new Response(200,[],file_get_contents(base_path('tests/Data/area_response_success.html'))),
-            new Response(200,[],'')
+            new Response(200, [], file_get_contents(base_path('tests/Data/area_response_success.html'))),
+            new Response(200, [], '')
         ]);
         $this->mockCosmoteClientAvailabilityResponse($mock);
 
@@ -64,9 +61,8 @@ class CosmoteAvailabilityControllerTest extends TestCase
         $this->assertFalse($response->json('fiber'));
 
         $number->refresh();
-        $this->assertEquals(0,$number->cosmote_200_ftth);
+        $this->assertEquals(0, $number->cosmote_200_ftth);
     }
-
 
     /** @test */
     public function it_returns_an_error_when_no_areas_are_found()
@@ -75,7 +71,7 @@ class CosmoteAvailabilityControllerTest extends TestCase
 
         // both area & availability results successful
         $mock = new MockHandler([
-            new Response(200,[],'')
+            new Response(200, [], '')
         ]);
         $this->mockCosmoteClientAvailabilityResponse($mock);
 
@@ -88,9 +84,8 @@ class CosmoteAvailabilityControllerTest extends TestCase
         $this->assertEquals('error', $response->json('status'));
         $this->assertEquals('No areas found', $response->json('message'));
         $number->refresh();
-        $this->assertEquals(0,$number->cosmote_200_ftth);
+        $this->assertEquals(0, $number->cosmote_200_ftth);
     }
-
 
     /**
      * Mocks responses of Cosmote Client
@@ -100,12 +95,13 @@ class CosmoteAvailabilityControllerTest extends TestCase
         $handlerStack = HandlerStack::create($mockHandler);
         $client = new \GuzzleHttp\Client(['handler' => $handlerStack]);
 
-        $cosmoteClient = new CosmoteClient($client,
+        $cosmoteClient = new CosmoteClient(
+            $client,
             resolve(AreaHtmlParser::class),
             resolve(AvailabilityParser::class)
         );
 
-        $this->app->bind(CosmoteClient::class,function() use ($cosmoteClient){
+        $this->app->bind(CosmoteClient::class, function () use ($cosmoteClient) {
             return $cosmoteClient;
         });
 

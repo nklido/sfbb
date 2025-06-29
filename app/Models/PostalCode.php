@@ -13,12 +13,11 @@ class PostalCode extends Model
 
     public function streets(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Street::class,'postal_code_id');
+        return $this->hasMany(Street::class, 'postal_code_id');
     }
 
-    public function scopeAthens($query){
-        $query->whereBetween('code',[10443,12461]);
+    public function scopeAthens($query)
+    {
+        $query->whereBetween('code', [10443,12461]);
     }
-
-
 }

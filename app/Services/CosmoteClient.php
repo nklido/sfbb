@@ -8,15 +8,17 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
-use PHPUnit\Exception;
 
 class CosmoteClient
 {
     private ?string $availabilityUrl;
+
     private ?string $areaUrl;
 
     protected ?Client $client = null;
+
     protected ?AreaHtmlParser $areaHtmlParser = null;
+
     protected ?AvailabilityParser $availabilityParser = null;
 
     public function __construct(Client $client, AreaHtmlParser $areaHtmlParser, AvailabilityParser $availabilityParser)
@@ -32,8 +34,8 @@ class CosmoteClient
      * @param $area
      * @param $streetName
      * @param $number
-     * @return array
      * @throws \Exception
+     * @return array
      */
     public function checkAvailability($area, $streetName, $number): array
     {
@@ -77,5 +79,4 @@ class CosmoteClient
         $html = $response->getBody()->getContents();
         return $this->areaHtmlParser->parse($html);
     }
-
 }

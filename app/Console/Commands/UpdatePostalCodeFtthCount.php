@@ -37,11 +37,11 @@ class UpdatePostalCodeFtthCount extends Command
      */
     public function handle()
     {
-        $postalCodes = \App\Models\PostalCode::with('streets.numbers')->whereBetween('code',[10443,12461])->orderBy('code')->get();
+        $postalCodes = \App\Models\PostalCode::with('streets.numbers')->whereBetween('code', [10443,12461])->orderBy('code')->get();
 
-        foreach($postalCodes as $postalCode){
-            $count = \App\Models\StreetNumber::where('cosmote_200_ftth',1)->whereHas('street.postalCode', function($q) use($postalCode){
-                $q->where('code',$postalCode->code);
+        foreach ($postalCodes as $postalCode) {
+            $count = \App\Models\StreetNumber::where('cosmote_200_ftth', 1)->whereHas('street.postalCode', function ($q) use ($postalCode) {
+                $q->where('code', $postalCode->code);
             })->count();
 
             $this->comment("Updating: $postalCode->code, count: $count");
@@ -50,7 +50,7 @@ class UpdatePostalCodeFtthCount extends Command
             $postalCode->save();
         }
 
-        
+
         return Command::SUCCESS;
     }
 }

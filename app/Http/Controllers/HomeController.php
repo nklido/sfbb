@@ -10,7 +10,6 @@ class HomeController extends Controller
 {
     public function __invoke(Request $request)
     {
-
         $numbers = [];
 
         if ($request->postal_code) {
@@ -20,11 +19,10 @@ class HomeController extends Controller
                     $q->where('code', $postal);
                 })->get()
                 ->sortBy([
-                    fn($a, $b) => strnatcmp($a->street->name, $b->street->name),
-                    fn($a, $b) => strnatcmp($a->number, $b->number),
+                    fn ($a, $b) => strnatcmp($a->street->name, $b->street->name),
+                    fn ($a, $b) => strnatcmp($a->number, $b->number),
                 ])
                 ->values();
-
         }
 
         $postalCodes = PostalCode::athens()
