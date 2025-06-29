@@ -43,7 +43,6 @@ class ImportStreetNumbers extends Command
 
         $streets = Street::with('postalCode')->get();
 
-
         foreach ($streets as $index => $street) {
             $postalCode = $street->postalCode;
 
@@ -57,14 +56,12 @@ class ImportStreetNumbers extends Command
 
             $numbers = json_decode(substr($contents, $start + 31, $end - ($start + 31) + 1));
 
-
             foreach ($numbers as $number) {
                 $street->numbers()->create(['number' => $number]);
             }
         }
 
         $this->comment('------------------------------------------------------------------------------');
-
 
         return Command::SUCCESS;
     }

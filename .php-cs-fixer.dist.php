@@ -25,5 +25,6 @@ return (new Config())
         'phpdoc_order' => true,
         'method_argument_space' => ['on_multiline' => 'ensure_fully_multiline'],
         'global_namespace_import' => ['import_classes' => true],
+        'no_extra_blank_lines' => true,
     ])
     ->setFinder($finder);

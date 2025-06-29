@@ -19,7 +19,6 @@ class HomeControllerTest extends TestCase
     {
         $postalCode = PostalCode::where('name', 'ΣΕΠΟΛΙΑ')->first();
 
-
         $response = $this->get(route('home', ['postal_code' => $postalCode->code]));
 
         $response->assertStatus(200)

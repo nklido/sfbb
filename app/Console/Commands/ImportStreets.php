@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Models\PostalCode;
 
-
 use Illuminate\Console\Command;
 
 class ImportStreets extends Command
@@ -44,7 +43,6 @@ class ImportStreets extends Command
 
         $client = new \GuzzleHttp\Client(['base_uri' => 'https://submit.sfbb.gr/EligibilityCheck.aspx']);
 
-
         foreach ($postalCodes as $index => $postalCode) {
             $this->comment("Index: $index: Requesting Postal Code $postalCode->code");
             $res = $client->request('GET', "?zip=$postalCode->code");
@@ -56,14 +54,11 @@ class ImportStreets extends Command
 
             $streets = json_decode(substr($contents, $start + 26, $end - ($start + 27) + 2));
 
-
             foreach ($streets as $street) {
                 $postalCode->streets()->create(['name' => $street]);
             }
             $this->comment('------------------------------------------------------------------------------');
         }
-
-
 
         return Command::SUCCESS;
     }

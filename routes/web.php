@@ -15,7 +15,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
-
 Route::post('/cosmote/check-availability', CosmoteAvailabilityController::class)->name('cosmote.check-availability');
 Route::get('/', HomeController::class)->name('home');

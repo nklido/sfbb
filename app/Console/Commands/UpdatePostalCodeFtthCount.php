@@ -50,7 +50,6 @@ class UpdatePostalCodeFtthCount extends Command
             $postalCode->save();
         }
 
-
         return Command::SUCCESS;
     }
 }

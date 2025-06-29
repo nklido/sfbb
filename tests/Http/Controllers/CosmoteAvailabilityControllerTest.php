@@ -17,7 +17,6 @@ class CosmoteAvailabilityControllerTest extends TestCase
     public function test_fiber_is_available()
     {
         $number = StreetNumber::find(23038);
-
         // both area & availability results successful
         $mock = new MockHandler([
             new Response(200, [], file_get_contents(base_path('tests/Data/area_response_success.html'))),
@@ -28,7 +27,6 @@ class CosmoteAvailabilityControllerTest extends TestCase
         $response = $this->post(route('cosmote.check-availability'), [
             'number' => $number->id
         ]);
-
 
         $response->assertStatus(200);
 
