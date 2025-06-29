@@ -5,7 +5,10 @@ namespace App\Services;
 use App\Parsers\Cosmote\AreaHtmlParser;
 use App\Parsers\Cosmote\AvailabilityParser;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Log;
+use PHPUnit\Exception;
 
 class CosmoteClient
 {
@@ -23,28 +26,42 @@ class CosmoteClient
     }
 
     /**
-     * @throws GuzzleException
+     * @param $area
+     * @param $streetName
+     * @param $number
+     * @return array
+     * @throws \Exception
      */
     public function checkAvailability($area, $streetName, $number): array
     {
 
-        $response = $this->client->request('POST', 'https://my.cosmote.gr/selfcare/jsp/ajax/avdslavailabilityAjaxV2.jsp', [
-            'headers' => [
-                "Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8",
-                "Accept-Language" => "en-US,en;q=0.5",
-                "Accept-Encoding" => "gzip, deflate, br"
-            ],
-            'form_params' => [
-                'mTelno' => '',
-                'mAddress' => $streetName,
-                'mState'   => 'Ν. ΑΤΤΙΚΗΣ',
-                'mPrefecture' => 'Δ. ΑΘΗΝΑΙΩΝ',
-                'mNumber' => $number,
-                'mArea' => $area,
-                'searchcriteria' => 'address',
-                'ct' => 'res'
-            ]
-        ]);
+        try {
+            $response = $this->client->request('POST', 'https://my.cosmote.gr/selfcare/jsp/ajax/avdslavailabilityAjaxV2.jsp', [
+                'connect_timeout' => 5,
+                'timeout' => 5,
+                'headers' => [
+                    "Content-Type" => "application/x-www-form-urlencoded; charset=UTF-8",
+                    "Accept-Language" => "en-US,en;q=0.5",
+                    "Accept-Encoding" => "gzip, deflate, br"
+                ],
+                'form_params' => [
+                    'mTelno' => '',
+                    'mAddress' => $streetName,
+                    'mState'   => 'Ν. ΑΤΤΙΚΗΣ',
+                    'mPrefecture' => 'Δ. ΑΘΗΝΑΙΩΝ',
+                    'mNumber' => $number,
+                    'mArea' => $area,
+                    'searchcriteria' => 'address',
+                    'ct' => 'res'
+                ]
+            ]);
+        } catch (ConnectException $e) {
+            Log::error($e);
+            throw new \Exception("Connection failed");
+        } catch (GuzzleException $e) {
+            Log::error($e);
+            throw new \Exception("Error processing request");
+        }
 
         return $this->availabilityParser->parse($response->getBody()->getContents());
     }
