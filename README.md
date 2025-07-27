@@ -2,7 +2,7 @@
 # Sfbb (Superfast Broadband) availability tool [![codecov](https://codecov.io/gh/nklido/sfbb/graph/badge.svg?token=2EZUEZY8BQ)](https://codecov.io/gh/nklido/sfbb)
 
 I created this tool to help me relocate to Athens and find an area that
-supports a fiber connection. Growing up in a place with 2Mbps speed, I just had to make sure 😂
+supports a fiber connection. Growing up in a place with 2Mbps speed, I just had to make sure..
 
 By scraping data from [sfbb](https://sfbb.gr/) and [Cosmote](https://www.cosmote.gr/hub/)
 
